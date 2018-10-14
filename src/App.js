@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from "axios";
+import AddExcercise from './AddExcercise';
 
 class App extends Component {
 
@@ -8,35 +9,54 @@ class App extends Component {
     super(props);
 
     this.state={
-      url:""
+      username:"",
+      serverReply:[]
     }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(){
+  handleChange(event){
 
-    this.setState({
-      url:this.url.value
-    })
+   this.setState({username:event.target.value});
+
+  }
+
+  handleSubmit(event){
+
+    event.preventDefault();
 
     const data={
-      url:this.state.url
+     username:this.state.username
     }
     
-    axios.post('https://east-drink.glitch.me/api/shorturl/new', data)
-    .then(function (response) {
-      console.log(response.data);
+    axios.post('https://fierce-pastry.glitch.me/api/exercise/new-user', data)
+    .then((response)=> {
+
+      console.log(response.data.response);
+
+      this.setState({serverReply: JSON.stringify(response.data.response) });
     })
     .catch(function (error) {
       console.log(error);
     });
 
+    this.setState({username:""});
+
+
   }
+  
   render() {
     return (
       <div className="App">
 
-      <input type="text" name="url" ref={(c)=>this.url=c}></input>
-      <button onClick={this.handleSubmit.bind(this)}> submit </button>
+      <p>create a new user </p>
+      <input type="text" value={this.state.username} onChange={this.handleChange}></input>
+      <button onClick={this.handleSubmit}> submit </button>
+      <p>{this.state.serverReply}</p>
+
+      <AddExcercise/>
         
       </div>
     );
